@@ -20,7 +20,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         
@@ -42,7 +42,7 @@
         
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -54,6 +54,10 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
+        .card.wide {
+            grid-column: 1 / -1;
+        }
+        
         .card h2 {
             font-size: 20px;
             margin-bottom: 20px;
@@ -63,12 +67,12 @@
         }
         
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         
         .input-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: #4a5568;
             margin-bottom: 6px;
@@ -79,13 +83,19 @@
             padding: 10px 12px;
             border: 2px solid #e2e8f0;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             transition: border-color 0.2s;
         }
         
         .input-group input:focus {
             outline: none;
             border-color: #667eea;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
         }
         
         .metric-row {
@@ -121,14 +131,6 @@
             color: white;
         }
         
-        .chart-container {
-            grid-column: 1 / -1;
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -145,18 +147,12 @@
             background: #f56565;
         }
         
-        .addon-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
             }
             
-            .addon-grid {
+            .input-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -172,28 +168,36 @@
         <div class="dashboard">
             <!-- User Counts Card -->
             <div class="card">
-                <h2>👥 User Counts</h2>
+                <h2>👥 User Distribution</h2>
                 <div class="input-group">
-                    <label>Admin Users</label>
-                    <input type="number" id="adminCount" value="10" min="0" oninput="calculate()">
+                    <label>Total Users on System</label>
+                    <input type="number" id="totalSystemUsers" value="1000" min="0" oninput="calculate()">
                 </div>
                 <div class="input-group">
-                    <label>Supervisor Users</label>
-                    <input type="number" id="supervisorCount" value="50" min="0" oninput="calculate()">
+                    <label>Admin Users (Billable)</label>
+                    <input type="number" id="adminCount" value="50" min="0" oninput="calculate()">
                 </div>
                 <div class="input-group">
-                    <label>Crew Users</label>
-                    <input type="number" id="crewCount" value="200" min="0" oninput="calculate()">
+                    <label>Supervisor Users (Billable)</label>
+                    <input type="number" id="supervisorCount" value="100" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Crew Users (Billable)</label>
+                    <input type="number" id="crewCount" value="600" min="0" oninput="calculate()">
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Total Users</span>
-                    <span class="metric-value" id="totalUsers">0</span>
+                    <span class="metric-label">Total Billable Users</span>
+                    <span class="metric-value" id="totalBillable">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Free Users</span>
+                    <span class="metric-value" id="freeUsers">0</span>
                 </div>
             </div>
             
             <!-- Pricing Card -->
             <div class="card">
-                <h2>💰 Pricing per User/Month</h2>
+                <h2>💰 Monthly Pricing</h2>
                 <div class="input-group">
                     <label>Admin Price ($)</label>
                     <input type="number" id="adminPrice" value="17" min="0" oninput="calculate()">
@@ -211,7 +215,7 @@
             <!-- Add-ons Card -->
             <div class="card">
                 <h2>📊 Add-on Modules</h2>
-                <div class="addon-grid">
+                <div class="input-grid">
                     <div class="input-group">
                         <label>Analytics Price ($)</label>
                         <input type="number" id="analyticsPrice" value="129" min="0" oninput="calculate()">
@@ -221,34 +225,80 @@
                         <input type="number" id="analyticsConversion" value="20" min="0" max="100" oninput="calculate()">
                     </div>
                     <div class="input-group">
-                        <label>Social Procurement Price ($)</label>
+                        <label>Social Procurement ($)</label>
                         <input type="number" id="socialPrice" value="59" min="0" oninput="calculate()">
                     </div>
                     <div class="input-group">
-                        <label>Social Procurement Conversion (%)</label>
+                        <label>Social Conversion (%)</label>
                         <input type="number" id="socialConversion" value="30" min="0" max="100" oninput="calculate()">
                     </div>
                 </div>
             </div>
             
-            <!-- Monthly Costs Card -->
+            <!-- Infrastructure Costs -->
             <div class="card">
-                <h2>💸 Monthly Costs</h2>
+                <h2>🖥️ Infrastructure Costs (Monthly $)</h2>
                 <div class="input-group">
-                    <label>Infrastructure (Azure, APIs, etc.)</label>
-                    <input type="number" id="infrastructureCost" value="500" min="0" oninput="calculate()">
+                    <label>Azure Server</label>
+                    <input type="number" id="azureCost" value="3000" min="0" step="100" oninput="calculate()">
                 </div>
                 <div class="input-group">
-                    <label>Variable Cost per User (Email, OTP, etc.)</label>
+                    <label>Weather API</label>
+                    <input type="number" id="weatherCost" value="7" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Auth0</label>
+                    <input type="number" id="auth0Cost" value="240" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>SendGrid</label>
+                    <input type="number" id="sendgridCost" value="20" min="0" oninput="calculate()">
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Infrastructure Subtotal</span>
+                    <span class="metric-value" id="infraSubtotal">$0</span>
+                </div>
+            </div>
+            
+            <!-- Development & Tools -->
+            <div class="card">
+                <h2>🔧 Dev Tools & QA (Monthly $)</h2>
+                <div class="input-group">
+                    <label>IntelliJ / IDE Licenses</label>
+                    <input type="number" id="intellijCost" value="60" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>AI Tools (Copilot, etc.)</label>
+                    <input type="number" id="aiToolsCost" value="100" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>QA Servers</label>
+                    <input type="number" id="qaServersCost" value="0" min="0" oninput="calculate()">
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Dev Tools Subtotal</span>
+                    <span class="metric-value" id="devSubtotal">$0</span>
+                </div>
+            </div>
+            
+            <!-- Variable & Operational Costs -->
+            <div class="card">
+                <h2>💸 Variable & Ops Costs (Monthly $)</h2>
+                <div class="input-group">
+                    <label>Variable Cost per User</label>
                     <input type="number" id="variableCostPerUser" value="0.5" min="0" step="0.1" oninput="calculate()">
                 </div>
                 <div class="input-group">
                     <label>Salaries & Team</label>
-                    <input type="number" id="salaryCost" value="15000" min="0" oninput="calculate()">
+                    <input type="number" id="salaryCost" value="0" min="0" step="1000" oninput="calculate()">
                 </div>
                 <div class="input-group">
-                    <label>Marketing & Other Ops</label>
-                    <input type="number" id="marketingCost" value="3000" min="0" oninput="calculate()">
+                    <label>Marketing & Growth</label>
+                    <input type="number" id="marketingCost" value="0" min="0" step="500" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Other Operational Costs</label>
+                    <input type="number" id="otherOpsCost" value="0" min="0" oninput="calculate()">
                 </div>
             </div>
             
@@ -264,7 +314,7 @@
                     <span class="metric-value" id="analyticsRevenue">$0</span>
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Social Procurement Add-on Revenue</span>
+                    <span class="metric-label">Social Procurement Revenue</span>
                     <span class="metric-value" id="socialRevenue">$0</span>
                 </div>
                 <div class="metric-row highlight">
@@ -275,22 +325,26 @@
             
             <!-- Cost Summary -->
             <div class="card">
-                <h2>💳 Cost Summary</h2>
+                <h2>💳 Total Cost Breakdown</h2>
                 <div class="metric-row">
                     <span class="metric-label">Infrastructure</span>
                     <span class="metric-value" id="totalInfra">$0</span>
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Variable Costs (Users)</span>
+                    <span class="metric-label">Dev Tools & QA</span>
+                    <span class="metric-value" id="totalDev">$0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Variable Costs (All Users)</span>
                     <span class="metric-value" id="totalVariable">$0</span>
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Salaries & Team</span>
+                    <span class="metric-label">Salaries</span>
                     <span class="metric-value" id="totalSalary">$0</span>
                 </div>
                 <div class="metric-row">
                     <span class="metric-label">Marketing & Other</span>
-                    <span class="metric-value" id="totalMarketing">$0</span>
+                    <span class="metric-value" id="totalOps">$0</span>
                 </div>
                 <div class="metric-row highlight">
                     <span class="metric-label">Total Monthly Cost</span>
@@ -300,7 +354,7 @@
             
             <!-- Profitability -->
             <div class="card">
-                <h2>💎 Profitability</h2>
+                <h2>💎 Profitability & Metrics</h2>
                 <div class="metric-row highlight">
                     <span class="metric-label">
                         <span class="status-indicator" id="profitIndicator"></span>
@@ -313,17 +367,21 @@
                     <span class="metric-value" id="profitMargin">0%</span>
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Revenue per User</span>
+                    <span class="metric-label">Revenue per Billable User</span>
                     <span class="metric-value" id="revenuePerUser">$0</span>
                 </div>
                 <div class="metric-row">
-                    <span class="metric-label">Cost per User</span>
+                    <span class="metric-label">Cost per System User</span>
                     <span class="metric-value" id="costPerUser">$0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Cost per Billable User</span>
+                    <span class="metric-value" id="costPerBillableUser">$0</span>
                 </div>
             </div>
             
             <!-- Breakeven Chart -->
-            <div class="chart-container">
+            <div class="card wide">
                 <h2>📊 Breakeven Analysis</h2>
                 <canvas id="breakevenChart"></canvas>
             </div>
@@ -334,11 +392,13 @@
         let chart;
         
         function calculate() {
-            // Get user counts
+            // Get system users
+            const totalSystemUsers = parseInt(document.getElementById('totalSystemUsers').value) || 0;
             const adminCount = parseInt(document.getElementById('adminCount').value) || 0;
             const supervisorCount = parseInt(document.getElementById('supervisorCount').value) || 0;
             const crewCount = parseInt(document.getElementById('crewCount').value) || 0;
-            const totalUsers = adminCount + supervisorCount + crewCount;
+            const totalBillable = adminCount + supervisorCount + crewCount;
+            const freeUsers = Math.max(0, totalSystemUsers - totalBillable);
             
             // Get pricing
             const adminPrice = parseFloat(document.getElementById('adminPrice').value) || 0;
@@ -351,53 +411,70 @@
             const socialPrice = parseFloat(document.getElementById('socialPrice').value) || 0;
             const socialConversion = parseFloat(document.getElementById('socialConversion').value) || 0;
             
-            // Get costs
-            const infrastructureCost = parseFloat(document.getElementById('infrastructureCost').value) || 0;
+            // Get infrastructure costs
+            const azureCost = parseFloat(document.getElementById('azureCost').value) || 0;
+            const weatherCost = parseFloat(document.getElementById('weatherCost').value) || 0;
+            const auth0Cost = parseFloat(document.getElementById('auth0Cost').value) || 0;
+            const sendgridCost = parseFloat(document.getElementById('sendgridCost').value) || 0;
+            const infraSubtotal = azureCost + weatherCost + auth0Cost + sendgridCost;
+            
+            // Get dev costs
+            const intellijCost = parseFloat(document.getElementById('intellijCost').value) || 0;
+            const aiToolsCost = parseFloat(document.getElementById('aiToolsCost').value) || 0;
+            const qaServersCost = parseFloat(document.getElementById('qaServersCost').value) || 0;
+            const devSubtotal = intellijCost + aiToolsCost + qaServersCost;
+            
+            // Get operational costs
             const variableCostPerUser = parseFloat(document.getElementById('variableCostPerUser').value) || 0;
             const salaryCost = parseFloat(document.getElementById('salaryCost').value) || 0;
             const marketingCost = parseFloat(document.getElementById('marketingCost').value) || 0;
+            const otherOpsCost = parseFloat(document.getElementById('otherOpsCost').value) || 0;
             
             // Calculate revenue
             const baseRevenue = (adminCount * adminPrice) + (supervisorCount * supervisorPrice) + (crewCount * crewPrice);
-            const analyticsRevenue = totalUsers * (analyticsConversion / 100) * analyticsPrice;
-            const socialRevenue = totalUsers * (socialConversion / 100) * socialPrice;
+            const analyticsRevenue = totalBillable * (analyticsConversion / 100) * analyticsPrice;
+            const socialRevenue = totalBillable * (socialConversion / 100) * socialPrice;
             const totalRevenue = baseRevenue + analyticsRevenue + socialRevenue;
             
             // Calculate costs
-            const variableCosts = totalUsers * variableCostPerUser;
-            const totalCost = infrastructureCost + variableCosts + salaryCost + marketingCost;
+            const variableCosts = totalSystemUsers * variableCostPerUser;
+            const totalCost = infraSubtotal + devSubtotal + variableCosts + salaryCost + marketingCost + otherOpsCost;
             
             // Calculate profit
             const netProfit = totalRevenue - totalCost;
             const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue * 100) : 0;
-            const revenuePerUser = totalUsers > 0 ? totalRevenue / totalUsers : 0;
-            const costPerUser = totalUsers > 0 ? totalCost / totalUsers : 0;
+            const revenuePerUser = totalBillable > 0 ? totalRevenue / totalBillable : 0;
+            const costPerUser = totalSystemUsers > 0 ? totalCost / totalSystemUsers : 0;
+            const costPerBillableUser = totalBillable > 0 ? totalCost / totalBillable : 0;
             
             // Update UI
-            document.getElementById('totalUsers').textContent = totalUsers.toLocaleString();
-            document.getElementById('baseRevenue').textContent = '$' + baseRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('analyticsRevenue').textContent = '$' + analyticsRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('socialRevenue').textContent = '$' + socialRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('totalBillable').textContent = totalBillable.toLocaleString();
+            document.getElementById('freeUsers').textContent = freeUsers.toLocaleString();
             
-            document.getElementById('totalInfra').textContent = '$' + infrastructureCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalVariable').textContent = '$' + variableCosts.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalSalary').textContent = '$' + salaryCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalMarketing').textContent = '$' + marketingCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalCost').textContent = '$' + totalCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('infraSubtotal').textContent = '$' + infraSubtotal.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('devSubtotal').textContent = '$' + devSubtotal.toLocaleString(undefined, {minimumFractionDigits: 2});
             
-            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('baseRevenue').textContent = '$' + baseRevenue.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('analyticsRevenue').textContent = '$' + analyticsRevenue.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('socialRevenue').textContent = '$' + socialRevenue.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2});
+            
+            document.getElementById('totalInfra').textContent = '$' + infraSubtotal.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalDev').textContent = '$' + devSubtotal.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalVariable').textContent = '$' + variableCosts.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalSalary').textContent = '$' + salaryCost.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalOps').textContent = '$' + (marketingCost + otherOpsCost).toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('totalCost').textContent = '$' + totalCost.toLocaleString(undefined, {minimumFractionDigits: 2});
+            
+            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString(undefined, {minimumFractionDigits: 2});
             document.getElementById('profitMargin').textContent = profitMargin.toFixed(1) + '%';
             document.getElementById('revenuePerUser').textContent = '$' + revenuePerUser.toFixed(2);
             document.getElementById('costPerUser').textContent = '$' + costPerUser.toFixed(2);
+            document.getElementById('costPerBillableUser').textContent = '$' + costPerBillableUser.toFixed(2);
             
             // Update profit indicator
             const indicator = document.getElementById('profitIndicator');
-            if (netProfit >= 0) {
-                indicator.className = 'status-indicator positive';
-            } else {
-                indicator.className = 'status-indicator negative';
-            }
+            indicator.className = netProfit >= 0 ? 'status-indicator positive' : 'status-indicator negative';
             
             // Update chart
             updateChart();
@@ -411,37 +488,45 @@
             const analyticsConversion = parseFloat(document.getElementById('analyticsConversion').value) || 0;
             const socialPrice = parseFloat(document.getElementById('socialPrice').value) || 0;
             const socialConversion = parseFloat(document.getElementById('socialConversion').value) || 0;
-            const infrastructureCost = parseFloat(document.getElementById('infrastructureCost').value) || 0;
+            
+            const azureCost = parseFloat(document.getElementById('azureCost').value) || 0;
+            const weatherCost = parseFloat(document.getElementById('weatherCost').value) || 0;
+            const auth0Cost = parseFloat(document.getElementById('auth0Cost').value) || 0;
+            const sendgridCost = parseFloat(document.getElementById('sendgridCost').value) || 0;
+            const intellijCost = parseFloat(document.getElementById('intellijCost').value) || 0;
+            const aiToolsCost = parseFloat(document.getElementById('aiToolsCost').value) || 0;
+            const qaServersCost = parseFloat(document.getElementById('qaServersCost').value) || 0;
             const variableCostPerUser = parseFloat(document.getElementById('variableCostPerUser').value) || 0;
             const salaryCost = parseFloat(document.getElementById('salaryCost').value) || 0;
             const marketingCost = parseFloat(document.getElementById('marketingCost').value) || 0;
+            const otherOpsCost = parseFloat(document.getElementById('otherOpsCost').value) || 0;
             
-            // Calculate for different user scales
+            const fixedCosts = azureCost + weatherCost + auth0Cost + sendgridCost + intellijCost + aiToolsCost + qaServersCost + salaryCost + marketingCost + otherOpsCost;
+            
             const userScales = [];
             const revenues = [];
             const costs = [];
             
-            // Assume ratio: 10% admin, 20% supervisor, 70% crew
-            for (let totalUsers = 0; totalUsers <= 1000; totalUsers += 50) {
-                const admin = Math.floor(totalUsers * 0.10);
-                const supervisor = Math.floor(totalUsers * 0.20);
-                const crew = totalUsers - admin - supervisor;
+            // Assume ratio from actual data: ~7% admin, ~13% supervisor, ~80% crew
+            for (let billableUsers = 0; billableUsers <= 2000; billableUsers += 100) {
+                const admin = Math.floor(billableUsers * 0.067);
+                const supervisor = Math.floor(billableUsers * 0.133);
+                const crew = billableUsers - admin - supervisor;
+                const totalSystem = Math.floor(billableUsers * 1.33); // Account for free users
                 
                 const baseRev = (admin * adminPrice) + (supervisor * supervisorPrice) + (crew * crewPrice);
-                const analyticsRev = totalUsers * (analyticsConversion / 100) * analyticsPrice;
-                const socialRev = totalUsers * (socialConversion / 100) * socialPrice;
+                const analyticsRev = billableUsers * (analyticsConversion / 100) * analyticsPrice;
+                const socialRev = billableUsers * (socialConversion / 100) * socialPrice;
                 const revenue = baseRev + analyticsRev + socialRev;
                 
-                const cost = infrastructureCost + (totalUsers * variableCostPerUser) + salaryCost + marketingCost;
+                const cost = fixedCosts + (totalSystem * variableCostPerUser);
                 
-                userScales.push(totalUsers);
+                userScales.push(billableUsers);
                 revenues.push(revenue);
                 costs.push(cost);
             }
             
-            if (chart) {
-                chart.destroy();
-            }
+            if (chart) chart.destroy();
             
             const ctx = document.getElementById('breakevenChart').getContext('2d');
             chart = new Chart(ctx, {
@@ -471,44 +556,29 @@
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
+                        legend: { display: true, position: 'top' },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
                             callbacks: {
                                 label: function(context) {
-                                    return context.dataset.label + ': $' + context.parsed.y.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                                    return context.dataset.label + ': $' + context.parsed.y.toLocaleString(undefined, {minimumFractionDigits: 2});
                                 }
                             }
                         }
                     },
                     scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Total Users'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Monthly ($)'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value.toLocaleString();
-                                }
-                            }
+                        x: { title: { display: true, text: 'Billable Users' } },
+                        y: { 
+                            title: { display: true, text: 'Monthly ($)' },
+                            ticks: { callback: value => '$' + value.toLocaleString() }
                         }
                     }
                 }
             });
         }
         
-        // Initialize on load
+        // Initialize
         calculate();
     </script>
 </body>
