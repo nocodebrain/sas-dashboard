@@ -1,0 +1,18 @@
+{
+  "name": "sas-connect-dashboard",
+  "version": "1.0.0",
+  "description": "SAS Connect Financial Dashboard - Real-time cost tracking and breakeven analysis",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["sas-connect", "dashboard", "financial", "breakeven"],
+  "author": "SAS Connect",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
